@@ -14,7 +14,7 @@
 // while there are tokens on the operator stack:
 //     pop the operator from the operator stack onto the output queue
 
-import { last } from './utils'
+import { last } from '../utils'
 
 export function infixToPostfix(tokens: string[]) {
   const outputQueue: string[] = []
