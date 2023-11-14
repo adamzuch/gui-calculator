@@ -38,7 +38,7 @@ export function infixToPostfix(tokens: string[]) {
       }
       operatorStack.push(o1)
     }
-    console.log('after', o1, 'queue', outputQueue, 'stack', operatorStack)
+    // console.log('after', o1, 'queue', outputQueue, 'stack', operatorStack)
   }
 
   while (operatorStack.length > 0) {
