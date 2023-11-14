@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
 import { cn } from './utils'
+import { infixToPostfix } from './calculator'
 
 type Token = string
 
 function App() {
   const [tokens, setTokens] = useState<Token[]>([])
 
-  console.log(tokens)
-
   const operators = ['+', '-', '*', '/']
   const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  console.log('tokens', tokens)
+  console.log('rpn', infixToPostfix(tokens))
 
   return (
     <div className="p-16">
@@ -43,6 +45,7 @@ function App() {
         <div className="grid grid-cols-4 grid-rows-1 gap-3">
           {operators.map((operator) => (
             <Button
+              key={operator}
               onClick={() => {
                 const last = tokens[tokens.length - 1]
                 if (last !== undefined && !operators.includes(last)) {
@@ -58,6 +61,7 @@ function App() {
         <div className="grid grid-cols-3 grid-rows-3 gap-3">
           {numbers.reverse().map((number) => (
             <Button
+              key={number}
               className=""
               onClick={() => {
                 const last = tokens[tokens.length - 1]
