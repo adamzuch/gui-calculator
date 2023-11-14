@@ -20,12 +20,11 @@ export function infixToPostfix(tokens: string[]) {
   const outputQueue: string[] = []
   const operatorStack: string[] = []
 
-  for (const token of tokens) {
-    if (isNumeric(token)) {
-      outputQueue.push(token)
-    } else if (operators.includes(token)) {
-      const o1 = token
-      let o2 = last(outputQueue)
+  for (const o1 of tokens) {
+    if (isNumeric(o1)) {
+      outputQueue.push(o1)
+    } else if (operators.includes(o1)) {
+      let o2 = last(operatorStack)
       while (o2 !== undefined && getPrecedence(o2) >= getPrecedence(o1)) {
         if (operatorStack.length > 0) {
           const top = operatorStack.pop()
@@ -35,10 +34,11 @@ export function infixToPostfix(tokens: string[]) {
             throw Error()
           }
         }
-        o2 = last(outputQueue)
+        o2 = last(operatorStack)
       }
       operatorStack.push(o1)
     }
+    console.log('after', o1, 'queue', outputQueue, 'stack', operatorStack)
   }
 
   while (operatorStack.length > 0) {
@@ -63,4 +63,54 @@ function getPrecedence(s: string) {
 
 function isNumeric(s: string) {
   return !operators.includes(s)
+}
+
+export function evaluatePostfix(tokens: string[]) {
+  const stack: number[] = []
+
+  for (const token of tokens) {
+    switch (token) {
+      case '+': {
+        const b = stack.pop()
+        const a = stack.pop()
+        if (a !== undefined && b !== undefined) {
+          console.log('eval', a, '+', b)
+          stack.push(a + b)
+        }
+        break
+      }
+      case '-': {
+        const b = stack.pop()
+        const a = stack.pop()
+        if (a !== undefined && b !== undefined) {
+          console.log('eval', a, '-', b)
+          stack.push(a - b)
+        }
+        break
+      }
+      case '*': {
+        const b = stack.pop()
+        const a = stack.pop()
+        if (a !== undefined && b !== undefined) {
+          console.log('eval', a, '*', b)
+          stack.push(a * b)
+        }
+        break
+      }
+      case '/': {
+        const b = stack.pop()
+        const a = stack.pop()
+        if (a !== undefined && b !== undefined) {
+          console.log('eval', a, '/', b)
+          stack.push(a / b)
+        }
+        break
+      }
+      default: {
+        stack.push(parseInt(token))
+        break
+      }
+    }
+  }
+  return stack.pop()
 }
