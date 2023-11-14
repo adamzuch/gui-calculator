@@ -74,7 +74,7 @@ export function evaluatePostfix(tokens: string[]) {
         const b = stack.pop()
         const a = stack.pop()
         if (a !== undefined && b !== undefined) {
-          console.log('eval', a, '+', b)
+          // console.log('eval', a, '+', b)
           stack.push(a + b)
         }
         break
@@ -83,7 +83,7 @@ export function evaluatePostfix(tokens: string[]) {
         const b = stack.pop()
         const a = stack.pop()
         if (a !== undefined && b !== undefined) {
-          console.log('eval', a, '-', b)
+          // console.log('eval', a, '-', b)
           stack.push(a - b)
         }
         break
@@ -92,7 +92,7 @@ export function evaluatePostfix(tokens: string[]) {
         const b = stack.pop()
         const a = stack.pop()
         if (a !== undefined && b !== undefined) {
-          console.log('eval', a, '*', b)
+          // console.log('eval', a, '*', b)
           stack.push(a * b)
         }
         break
@@ -101,7 +101,7 @@ export function evaluatePostfix(tokens: string[]) {
         const b = stack.pop()
         const a = stack.pop()
         if (a !== undefined && b !== undefined) {
-          console.log('eval', a, '/', b)
+          // console.log('eval', a, '/', b)
           stack.push(a / b)
         }
         break
