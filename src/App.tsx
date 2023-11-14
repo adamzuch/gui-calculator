@@ -61,7 +61,9 @@ function App() {
               className=""
               onClick={() => {
                 const last = tokens[tokens.length - 1]
-                if (last !== undefined && !operators.includes(last)) {
+                if (last !== undefined && last === '0') {
+                  setTokens([...tokens.slice(0, -1), String(number)])
+                } else if (last !== undefined && !operators.includes(last)) {
                   setTokens([...tokens.slice(0, -1), last + String(number)])
                 } else {
                   setTokens(tokens.concat(String(number)))
