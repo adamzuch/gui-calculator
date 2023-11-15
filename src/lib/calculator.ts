@@ -79,6 +79,8 @@ function evaluatePostfix(tokens: string[]) {
         const res = OPERATOR_EVAL[token](a, b)
         stack.push(res)
       }
+    } else if (token.includes('.')) {
+      stack.push(parseFloat(token))
     } else {
       stack.push(parseInt(token))
     }

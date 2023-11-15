@@ -44,7 +44,8 @@ export function Calculator() {
 
   const enterOperator = (operator: string) => {
     const lastToken = last(tokens)
-    if (lastToken !== undefined && !isOperator(lastToken)) {
+    const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
+    if (isLastTokenDigit) {
       setTokens(tokens.concat(operator))
     }
   }
@@ -62,6 +63,16 @@ export function Calculator() {
       setTokens([...tokens.slice(0, -1), lastToken + String(digit)])
     } else {
       setTokens(tokens.concat(String(digit)))
+    }
+  }
+
+  const enterPeriod = () => {
+    const lastToken = last(tokens)
+
+    if (lastToken === undefined) {
+      setTokens(tokens.concat('.'))
+    } else if (!lastToken.includes('.')) {
+      setTokens([...tokens.slice(0, -1), lastToken + '.'])
     }
   }
 
@@ -94,6 +105,8 @@ export function Calculator() {
           </Button>
         ))}
       </div>
+
+      <Button onClick={enterPeriod}>.</Button>
 
       <div className="grid grid-cols-3 grid-rows-3 gap-3">
         {DIGITS.map((digit) => (
