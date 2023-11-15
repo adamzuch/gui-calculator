@@ -45,7 +45,14 @@ export function Calculator() {
   const enterOperator = (operator: string) => {
     const lastToken = last(tokens)
     const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
-    if (isLastTokenDigit) {
+    if (
+      isLastTokenDigit ||
+      (lastToken !== undefined &&
+        isOperator(lastToken) &&
+        lastToken !== '-' &&
+        operator === '-') ||
+      (tokens.length === 0 && operator === '-')
+    ) {
       setTokens(tokens.concat(operator))
     }
   }
@@ -54,7 +61,11 @@ export function Calculator() {
     const lastToken = last(tokens)
 
     const isLastTokenZero = lastToken !== undefined && lastToken === '0'
-    const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
+    const isLastTokenDigit =
+      (lastToken !== undefined && !isOperator(lastToken)) ||
+      (lastToken !== undefined &&
+        lastToken === '-' &&
+        (tokens.length === 1 || isOperator(last(tokens, 1))))
 
     if (isLastTokenZero) {
       // remove leading zero

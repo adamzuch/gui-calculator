@@ -5,6 +5,6 @@ export function cn(...args: ClassValue[]) {
   return twMerge(clsx(args))
 }
 
-export function last<T>(arr: T[]): T | undefined {
-  return arr[arr.length - 1]
+export function last<T>(arr: T[], offset = 0): T | undefined {
+  return arr[arr.length - 1 - offset]
 }
