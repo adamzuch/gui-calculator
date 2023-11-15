@@ -51,11 +51,14 @@ export function Calculator() {
 
   const enterDigit = (digit: number) => {
     const lastToken = last(tokens)
-    if (
-      lastToken !== undefined &&
-      lastToken !== '0' &&
-      !isOperator(lastToken)
-    ) {
+
+    const isLastTokenZero = lastToken !== undefined && lastToken === '0'
+    const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
+
+    if (isLastTokenZero) {
+      // remove leading zero
+      setTokens([...tokens.slice(0, -1), String(digit)])
+    } else if (!isLastTokenZero && isLastTokenDigit) {
       setTokens([...tokens.slice(0, -1), lastToken + String(digit)])
     } else {
       setTokens(tokens.concat(String(digit)))
