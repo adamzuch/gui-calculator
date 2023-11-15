@@ -2,7 +2,7 @@ import { last } from '../utils'
 
 type Operator = '+' | '-' | '*' | '/'
 
-const OPERATORS: Operator[] = ['+', '-', '*', '/']
+export const OPERATORS: Operator[] = ['+', '-', '*', '/']
 
 // eslint-disable-next-line no-unused-vars
 const OPERATOR_PRECEDENCE: { [key in Operator]: number } = {
@@ -24,6 +24,10 @@ export function calculate(tokens: string[]) {
   const res = evaluatePostfix(postfix)
 
   return res
+}
+
+export function isOperator(token: string): token is Operator {
+  return OPERATORS.includes(token as Operator)
 }
 
 /**
@@ -84,8 +88,4 @@ function evaluatePostfix(tokens: string[]) {
 
 function getPrecedence(operator: Operator) {
   return OPERATOR_PRECEDENCE[operator] ?? -1
-}
-
-function isOperator(token: string): token is Operator {
-  return OPERATORS.includes(token as Operator)
 }

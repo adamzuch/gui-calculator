@@ -1,10 +1,9 @@
 import { useState } from 'react'
 
 import { Button } from './Button'
-import { calculate } from '../lib/calculator'
+import { calculate, OPERATORS, isOperator } from '../lib/calculator'
 import { last } from '../utils'
 
-const OPERATORS = ['+', '-', '*', '/']
 const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 export function Calculator() {
@@ -45,7 +44,7 @@ export function Calculator() {
 
   const enterOperator = (operator: string) => {
     const lastToken = last(tokens)
-    if (lastToken !== undefined && !OPERATORS.includes(lastToken)) {
+    if (lastToken !== undefined && !isOperator(lastToken)) {
       setTokens(tokens.concat(operator))
     }
   }
@@ -55,7 +54,7 @@ export function Calculator() {
     if (
       lastToken !== undefined &&
       lastToken !== '0' &&
-      !OPERATORS.includes(lastToken)
+      !isOperator(lastToken)
     ) {
       setTokens([...tokens.slice(0, -1), lastToken + String(digit)])
     } else {
