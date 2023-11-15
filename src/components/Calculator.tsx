@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { Button } from './Button'
-import { evaluatePostfix, infixToPostfix } from '../lib/calculator'
+import { calculate } from '../lib/calculator'
 import { last } from '../utils'
 
 const OPERATORS = ['+', '-', '*', '/']
@@ -13,8 +13,7 @@ export function Calculator() {
   console.log('tokens', tokens)
 
   const evaluate = () => {
-    const postfixTokens = infixToPostfix(tokens)
-    const res = evaluatePostfix(postfixTokens)
+    const res = calculate(tokens)
     setTokens([String(res)])
   }
 

@@ -1,116 +1,91 @@
-// while there are tokens to be read:
-//     read a token
-//     if the token is:
-//     - a number:
-//         put it into the output queue
-//     - an operator o1:
-//         while (
-//             (o2 has greater precedence than o1 or (o1 and o2 have the same precedence and o1 is left-associative)
-//         ):
-//             pop o2 from the operator stack into the output queue
-//         push o1 onto the operator stack
-//
-// /* After the while loop, pop the remaining items from the operator stack into the output queue. */
-// while there are tokens on the operator stack:
-//     pop the operator from the operator stack onto the output queue
-
 import { last } from '../utils'
 
-export function infixToPostfix(tokens: string[]) {
-  const outputQueue: string[] = []
-  const operatorStack: string[] = []
+type Operator = '+' | '-' | '*' | '/'
 
-  for (const o1 of tokens) {
-    if (isNumeric(o1)) {
-      outputQueue.push(o1)
-    } else if (operators.includes(o1)) {
-      let o2 = last(operatorStack)
-      while (o2 !== undefined && getPrecedence(o2) >= getPrecedence(o1)) {
-        if (operatorStack.length > 0) {
-          const top = operatorStack.pop()
-          if (top !== undefined) {
-            outputQueue.push(top)
-          } else {
-            throw Error()
-          }
-        }
-        o2 = last(operatorStack)
+const OPERATORS: Operator[] = ['+', '-', '*', '/']
+
+// eslint-disable-next-line no-unused-vars
+const OPERATOR_PRECEDENCE: { [key in Operator]: number } = {
+  '*': 3,
+  '/': 3,
+  '+': 2,
+  '-': 2,
+}
+// eslint-disable-next-line no-unused-vars
+const OPERATOR_EVAL: { [key in Operator]: (a: number, b: number) => number } = {
+  '*': (a, b) => a * b,
+  '/': (a, b) => a / b,
+  '+': (a, b) => a + b,
+  '-': (a, b) => a - b,
+}
+
+export function calculate(tokens: string[]) {
+  const postfix = infixToPostfix(tokens)
+  const res = evaluatePostfix(postfix)
+
+  return res
+}
+
+/**
+ * Basic implementation of Shunting yard algorithm converting infix notation to postfix (Reverse Polish notation).
+ */
+function infixToPostfix(tokens: string[]) {
+  const output: string[] = []
+  const operatorStack: Operator[] = []
+
+  for (const token of tokens) {
+    if (isOperator(token)) {
+      const currOperator = token
+      let prevOperator = last(operatorStack)
+      while (
+        prevOperator !== undefined &&
+        getPrecedence(prevOperator) >= getPrecedence(currOperator)
+      ) {
+        operatorStack.pop()
+        output.push(prevOperator)
+        prevOperator = last(operatorStack)
       }
-      operatorStack.push(o1)
+      operatorStack.push(currOperator)
+    } else {
+      output.push(token)
     }
-    // console.log('after', o1, 'queue', outputQueue, 'stack', operatorStack)
   }
 
   while (operatorStack.length > 0) {
-    const top = operatorStack.pop()
-    if (top !== undefined) {
-      outputQueue.push(top)
-    } else {
-      throw Error()
+    const operator = operatorStack.pop()
+    if (operator !== undefined) {
+      output.push(operator)
     }
   }
 
-  return outputQueue
+  return output
 }
 
-const operators = ['+', '-', '*', '/']
-
-const precedence: { [key: string]: number } = { '*': 3, '/': 3, '+': 2, '-': 2 }
-
-function getPrecedence(s: string) {
-  return precedence[s] ?? -1
-}
-
-function isNumeric(s: string) {
-  return !operators.includes(s)
-}
-
-export function evaluatePostfix(tokens: string[]) {
+/**
+ * Evaluate expression using tokens expressed in postfix notation.
+ */
+function evaluatePostfix(tokens: string[]) {
   const stack: number[] = []
 
   for (const token of tokens) {
-    switch (token) {
-      case '+': {
-        const b = stack.pop()
-        const a = stack.pop()
-        if (a !== undefined && b !== undefined) {
-          // console.log('eval', a, '+', b)
-          stack.push(a + b)
-        }
-        break
+    if (isOperator(token)) {
+      const b = stack.pop()
+      const a = stack.pop()
+      if (a !== undefined && b !== undefined) {
+        const res = OPERATOR_EVAL[token](a, b)
+        stack.push(res)
       }
-      case '-': {
-        const b = stack.pop()
-        const a = stack.pop()
-        if (a !== undefined && b !== undefined) {
-          // console.log('eval', a, '-', b)
-          stack.push(a - b)
-        }
-        break
-      }
-      case '*': {
-        const b = stack.pop()
-        const a = stack.pop()
-        if (a !== undefined && b !== undefined) {
-          // console.log('eval', a, '*', b)
-          stack.push(a * b)
-        }
-        break
-      }
-      case '/': {
-        const b = stack.pop()
-        const a = stack.pop()
-        if (a !== undefined && b !== undefined) {
-          // console.log('eval', a, '/', b)
-          stack.push(a / b)
-        }
-        break
-      }
-      default: {
-        stack.push(parseInt(token))
-        break
-      }
+    } else {
+      stack.push(parseInt(token))
     }
   }
   return stack.pop()
+}
+
+function getPrecedence(operator: Operator) {
+  return OPERATOR_PRECEDENCE[operator] ?? -1
+}
+
+function isOperator(token: string): token is Operator {
+  return OPERATORS.includes(token as Operator)
 }
