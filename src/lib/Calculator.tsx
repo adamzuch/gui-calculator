@@ -7,8 +7,6 @@ import { last } from '../utils'
 export function Calculator() {
   const [tokens, setTokens] = useState<string[]>([])
 
-  console.log('tokens', tokens)
-
   const evaluate = () => {
     const res = calculate(tokens)
 
