@@ -1,10 +1,8 @@
 import { useState } from 'react'
 
 import { Button } from './Button'
-import { calculate, OPERATORS, isOperator } from '../lib/calculator'
+import { calculate, isOperator } from '../lib/calculator'
 import { last } from '../utils'
-
-const DIGITS = [9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 
 export function Calculator() {
   const [tokens, setTokens] = useState<string[]>([])
@@ -93,43 +91,74 @@ export function Calculator() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center gap-6">
+    <div className="flex flex-col items-center justify-center gap-9 text-xl">
       <input
-        className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+        readOnly
+        className="text-right block w-full rounded-2xl py-2 px-4 h-16 text-black border-2 shadow-sm border-neutral-100 placeholder:text-gray-500 focus:ring-4 focus:ring-inset focus:ring-amber-500 focus:outline-none"
         value={tokens.join('')}
         placeholder="0"
         onChange={() => {}}
       />
-      <div className="grid grid-cols-3 grid-rows-1 gap-3">
-        <Button className="bg-red-500 w-fit" onClick={clear}>
-          C
-        </Button>
 
-        <Button className="bg-red-500 w-fit" onClick={clearEntry}>
-          CE
-        </Button>
-
-        <Button className="bg-green-500 w-fit" onClick={evaluate}>
-          =
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-4 grid-rows-1 gap-3">
-        {OPERATORS.map((operator) => (
-          <Button key={operator} onClick={() => enterOperator(operator)}>
-            {operator}
+      <div className="flex gap-3">
+        <div className="grid grid-cols-4 gap-3">
+          {[7, 8, 9].map((digit) => (
+            <Button
+              key={digit}
+              variant="tertiary"
+              onClick={() => enterDigit(digit)}
+            >
+              {digit}
+            </Button>
+          ))}
+          <Button variant="secondary" onClick={() => enterOperator('/')}>
+            ÷
           </Button>
-        ))}
-      </div>
-
-      <Button onClick={enterPeriod}>.</Button>
-
-      <div className="grid grid-cols-3 grid-rows-3 gap-3">
-        {DIGITS.map((digit) => (
-          <Button key={digit} onClick={() => enterDigit(digit)}>
-            {digit}
+          {[4, 5, 6].map((digit) => (
+            <Button
+              key={digit}
+              variant="tertiary"
+              onClick={() => enterDigit(digit)}
+            >
+              {digit}
+            </Button>
+          ))}
+          <Button variant="secondary" onClick={() => enterOperator('*')}>
+            ×
           </Button>
-        ))}
+          {[1, 2, 3].map((digit) => (
+            <Button
+              key={digit}
+              variant="tertiary"
+              onClick={() => enterDigit(digit)}
+            >
+              {digit}
+            </Button>
+          ))}
+          <Button variant="secondary" onClick={() => enterOperator('-')}>
+            −
+          </Button>
+          <Button variant="tertiary" onClick={() => enterDigit(0)}>
+            {0}
+          </Button>
+          <Button variant="secondary" onClick={enterPeriod}>
+            .
+          </Button>
+          <Button variant="primary" onClick={evaluate}>
+            =
+          </Button>
+          <Button variant="secondary" onClick={() => enterOperator('+')}>
+            +
+          </Button>
+        </div>
+        <div className="flex flex-col gap-3 justify-start items-start">
+          <Button variant="destructive" onClick={clearEntry}>
+            ←
+          </Button>
+          <Button variant="destructive" onClick={clear}>
+            C
+          </Button>
+        </div>
       </div>
     </div>
   )
