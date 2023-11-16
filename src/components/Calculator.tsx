@@ -44,33 +44,38 @@ export function Calculator() {
 
   const enterOperator = (operator: string) => {
     const lastToken = last(tokens)
+
     const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
-    if (
-      isLastTokenDigit ||
-      (lastToken !== undefined &&
-        isOperator(lastToken) &&
-        lastToken !== '-' &&
-        operator === '-') ||
-      (tokens.length === 0 && operator === '-')
-    ) {
+
+    // exception for '-' so we allow operations on negative numbers. Don't allow double negatives.
+    const isOperatorUnaryNegative =
+      operator === '-' && (lastToken === undefined || lastToken !== '-')
+
+    if (isLastTokenDigit || isOperatorUnaryNegative) {
       setTokens(tokens.concat(operator))
     }
   }
 
   const enterDigit = (digit: number) => {
     const lastToken = last(tokens)
+    const secondLastToken = last(tokens, 1)
 
     const isLastTokenZero = lastToken !== undefined && lastToken === '0'
-    const isLastTokenDigit =
-      (lastToken !== undefined && !isOperator(lastToken)) ||
-      (lastToken !== undefined &&
-        lastToken === '-' &&
-        (tokens.length === 1 || isOperator(last(tokens, 1))))
+    const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
+
+    // we can detect unary negative operator if lastToken '-' is the only token OR,
+    // the token before it is an operator.
+    const isLastTokenUnaryNegative =
+      lastToken !== undefined &&
+      lastToken === '-' &&
+      (tokens.length === 1 ||
+        (secondLastToken !== undefined && isOperator(secondLastToken)))
 
     if (isLastTokenZero) {
       // remove leading zero
       setTokens([...tokens.slice(0, -1), String(digit)])
-    } else if (!isLastTokenZero && isLastTokenDigit) {
+    } else if (isLastTokenDigit || isLastTokenUnaryNegative) {
+      // append digit to the last token instead of creating a new token
       setTokens([...tokens.slice(0, -1), lastToken + String(digit)])
     } else {
       setTokens(tokens.concat(String(digit)))

@@ -19,4 +19,8 @@ describe('calculator', () => {
       expect(calculate(expression)).toBe(answer)
     }
   })
+
+  // handles decimals
+
+  // handles negative numbers
 })
