@@ -11,7 +11,12 @@ export function Calculator() {
 
   const evaluate = () => {
     const res = calculate(tokens)
-    setTokens([String(res)])
+
+    if ([NaN, Infinity, -Infinity, undefined, null].includes(res)) {
+      setTokens(['error'])
+    } else {
+      setTokens([String(res)])
+    }
   }
 
   const clear = () => {
@@ -21,7 +26,7 @@ export function Calculator() {
   const clearEntry = () => {
     const lastToken = last(tokens)
     if (lastToken !== undefined) {
-      if (lastToken.length === 1) {
+      if (lastToken.length === 1 || lastToken === 'error') {
         removeLastToken()
       } else if (lastToken.length > 1) {
         removeDigitFromLastToken()
@@ -44,12 +49,15 @@ export function Calculator() {
     const lastToken = last(tokens)
 
     const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
+    const isLastTokenError = lastToken !== undefined && lastToken === 'error'
 
     // exception for '-' so we allow operations on negative numbers. Don't allow double negatives.
     const isOperatorUnaryNegative =
       operator === '-' && (lastToken === undefined || lastToken !== '-')
 
-    if (isLastTokenDigit || isOperatorUnaryNegative) {
+    if (isLastTokenError && isOperatorUnaryNegative) {
+      setTokens([...tokens.slice(0, -1), operator])
+    } else if (isLastTokenDigit || isOperatorUnaryNegative) {
       setTokens(tokens.concat(operator))
     }
   }
@@ -58,7 +66,8 @@ export function Calculator() {
     const lastToken = last(tokens)
     const secondLastToken = last(tokens, 1)
 
-    const isLastTokenZero = lastToken !== undefined && lastToken === '0'
+    const isLastTokenZeroOrError =
+      lastToken !== undefined && (lastToken === '0' || lastToken === 'error')
     const isLastTokenDigit = lastToken !== undefined && !isOperator(lastToken)
 
     // we can detect unary negative operator if lastToken '-' is the only token OR,
@@ -69,8 +78,8 @@ export function Calculator() {
       (tokens.length === 1 ||
         (secondLastToken !== undefined && isOperator(secondLastToken)))
 
-    if (isLastTokenZero) {
-      // remove leading zero
+    if (isLastTokenZeroOrError) {
+      // remove leading zero or error
       setTokens([...tokens.slice(0, -1), String(digit)])
     } else if (isLastTokenDigit || isLastTokenUnaryNegative) {
       // append digit to the last token instead of creating a new token
@@ -81,12 +90,16 @@ export function Calculator() {
   }
 
   const enterPeriod = () => {
+    const period = '.'
     const lastToken = last(tokens)
 
-    if (lastToken === undefined) {
-      setTokens(tokens.concat('.'))
-    } else if (!lastToken.includes('.')) {
-      setTokens([...tokens.slice(0, -1), lastToken + '.'])
+    const isLastTokenError = lastToken !== undefined && lastToken === 'error'
+    if (isLastTokenError) {
+      setTokens([...tokens.slice(0, -1), period])
+    } else if (lastToken === undefined) {
+      setTokens(tokens.concat(period))
+    } else if (!lastToken.includes(period)) {
+      setTokens([...tokens.slice(0, -1), lastToken + period])
     }
   }
 

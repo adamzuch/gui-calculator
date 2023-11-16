@@ -103,7 +103,23 @@ describe('Calculator', () => {
     }
   })
 
-  it.skip('shows error for malformed expressions or undefined results', () => {})
+  it('shows error for malformed expressions or undefined results', () => {
+    const expressions = [
+      { expr: ['1', '+', '2', '×'] },
+      { expr: ['1', '÷', '0'] },
+    ]
+
+    const calculatorScreen = screen.getByTestId('calculator-screen')
+
+    for (const { expr } of expressions) {
+      for (const token of expr) {
+        fireEvent.click(screen.getByText(token))
+      }
+      fireEvent.click(screen.getByText('='))
+      expect(calculatorScreen).toHaveValue('error')
+      fireEvent.click(screen.getByText('C'))
+    }
+  })
 
   it('replaces leading zeroes when entering digits', () => {
     const calculatorScreen = screen.getByTestId('calculator-screen')
@@ -118,5 +134,35 @@ describe('Calculator', () => {
     expect(calculatorScreen).toHaveValue('1-2')
   })
 
-  it.skip('replaces error when entering digits after an erroneous expression', () => {})
+  it('replaces error when entering tokens after an erroneous expression', () => {
+    const calculatorScreen = screen.getByTestId('calculator-screen')
+
+    fireEvent.click(screen.getByText('1'))
+    fireEvent.click(screen.getByText('÷'))
+    fireEvent.click(screen.getByText('0'))
+    fireEvent.click(screen.getByText('='))
+    fireEvent.click(screen.getByText('1'))
+    expect(calculatorScreen).not.toHaveValue('error1')
+    expect(calculatorScreen).toHaveValue('1')
+
+    fireEvent.click(screen.getByText('C'))
+
+    fireEvent.click(screen.getByText('1'))
+    fireEvent.click(screen.getByText('÷'))
+    fireEvent.click(screen.getByText('0'))
+    fireEvent.click(screen.getByText('='))
+    fireEvent.click(screen.getByText('.'))
+    expect(calculatorScreen).not.toHaveValue('error.')
+    expect(calculatorScreen).toHaveValue('.')
+
+    fireEvent.click(screen.getByText('C'))
+
+    fireEvent.click(screen.getByText('1'))
+    fireEvent.click(screen.getByText('÷'))
+    fireEvent.click(screen.getByText('0'))
+    fireEvent.click(screen.getByText('='))
+    fireEvent.click(screen.getByText('-'))
+    expect(calculatorScreen).not.toHaveValue('error.')
+    expect(calculatorScreen).toHaveValue('-')
+  })
 })
