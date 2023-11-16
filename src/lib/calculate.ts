@@ -2,7 +2,7 @@ import { last } from '../utils'
 
 type Operator = '+' | '-' | '*' | '/'
 
-export const OPERATORS: Operator[] = ['+', '-', '*', '/']
+const OPERATORS: Operator[] = ['+', '-', '*', '/']
 
 // eslint-disable-next-line no-unused-vars
 const OPERATOR_PRECEDENCE: { [key in Operator]: number } = {

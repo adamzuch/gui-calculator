@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Button } from './Button'
-import { calculate, isOperator } from '../lib/calculator'
+import { Button } from '../components/Button'
+import { calculate, isOperator } from './calculate'
 import { last } from '../utils'
 
 export function Calculator() {
@@ -93,6 +93,7 @@ export function Calculator() {
   return (
     <div className="flex flex-col items-center justify-center gap-9 text-xl">
       <input
+        data-testid="calculator-screen"
         readOnly
         className="text-right block w-full rounded-2xl py-2 px-4 h-16 text-black border-2 shadow-sm border-neutral-100 placeholder:text-gray-500 focus:ring-4 focus:ring-inset focus:ring-amber-500 focus:outline-none"
         value={tokens.map(getDisplayToken).join('')}
@@ -151,7 +152,10 @@ export function Calculator() {
             {getDisplayToken('+')}
           </Button>
         </div>
-        <div className="flex flex-col gap-3 justify-start items-start">
+        <div
+          data-testid="ce"
+          className="flex flex-col gap-3 justify-start items-start"
+        >
           <Button variant="destructive" onClick={clearEntry}>
             ←
           </Button>
@@ -169,8 +173,6 @@ const getDisplayToken = (token: string) => {
     return '÷'
   } else if (token === '*') {
     return '×'
-  } else if (token === '-') {
-    return '−'
   } else {
     return token
   }
