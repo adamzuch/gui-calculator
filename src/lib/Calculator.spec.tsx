@@ -162,7 +162,7 @@ describe('Calculator', () => {
     fireEvent.click(screen.getByText('0'))
     fireEvent.click(screen.getByText('='))
     fireEvent.click(screen.getByText('-'))
-    expect(calculatorScreen).not.toHaveValue('error.')
+    expect(calculatorScreen).not.toHaveValue('error-')
     expect(calculatorScreen).toHaveValue('-')
   })
 })
