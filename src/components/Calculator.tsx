@@ -95,7 +95,7 @@ export function Calculator() {
       <input
         readOnly
         className="text-right block w-full rounded-2xl py-2 px-4 h-16 text-black border-2 shadow-sm border-neutral-100 placeholder:text-gray-500 focus:ring-4 focus:ring-inset focus:ring-amber-500 focus:outline-none"
-        value={tokens.join('')}
+        value={tokens.map(getDisplayToken).join('')}
         placeholder="0"
         onChange={() => {}}
       />
@@ -112,7 +112,7 @@ export function Calculator() {
             </Button>
           ))}
           <Button variant="secondary" onClick={() => enterOperator('/')}>
-            ÷
+            {getDisplayToken('/')}
           </Button>
           {[4, 5, 6].map((digit) => (
             <Button
@@ -124,7 +124,7 @@ export function Calculator() {
             </Button>
           ))}
           <Button variant="secondary" onClick={() => enterOperator('*')}>
-            ×
+            {getDisplayToken('*')}
           </Button>
           {[1, 2, 3].map((digit) => (
             <Button
@@ -136,7 +136,7 @@ export function Calculator() {
             </Button>
           ))}
           <Button variant="secondary" onClick={() => enterOperator('-')}>
-            −
+            {getDisplayToken('-')}
           </Button>
           <Button variant="tertiary" onClick={() => enterDigit(0)}>
             {0}
@@ -148,7 +148,7 @@ export function Calculator() {
             =
           </Button>
           <Button variant="secondary" onClick={() => enterOperator('+')}>
-            +
+            {getDisplayToken('+')}
           </Button>
         </div>
         <div className="flex flex-col gap-3 justify-start items-start">
@@ -162,4 +162,16 @@ export function Calculator() {
       </div>
     </div>
   )
+}
+
+const getDisplayToken = (token: string) => {
+  if (token === '/') {
+    return '÷'
+  } else if (token === '*') {
+    return '×'
+  } else if (token === '-') {
+    return '−'
+  } else {
+    return token
+  }
 }

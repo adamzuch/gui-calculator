@@ -9,8 +9,9 @@ const buttonVariants = cva(
       variant: {
         primary:
           'bg-amber-500 hover:bg-amber-400 focus:ring-amber-300 text-black',
-        secondary: 'bg-neutral-800 hover:bg-neutral-700 focus:ring-neutral-500',
-        tertiary: 'bg-neutral-500 hover:bg-neutral-400 focus:ring-neutral-300',
+        secondary: 'bg-neutral-700 hover:bg-neutral-600 focus:ring-neutral-500',
+        tertiary:
+          'bg-neutral-300 hover:bg-neutral-200 focus:ring-neutral-100 text-black',
         destructive: 'bg-rose-700 hover:bg-rose-600 focus:ring-rose-300',
       },
     },
